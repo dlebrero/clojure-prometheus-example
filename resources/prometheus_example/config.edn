@@ -17,7 +17,8 @@
 
   :prometheus-example.handler.monitoring-compojure/collector {}
   :prometheus-example.handler.monitoring-compojure/middleware {:collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
-  :prometheus-example.handler.monitoring-compojure/router {:router #ig/ref :duct.router/cascading}
+  :prometheus-example.handler.monitoring-compojure/router {:router #ig/ref :duct.router/cascading
+                                                           :collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
 
   :duct.router/cascading
   [#ig/ref [:prometheus-example.handler/example]]
