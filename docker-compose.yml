@@ -1,0 +1,17 @@
+version: "3"
+services:
+  postgres:
+    build: postgres
+  backend:
+    build:
+      context: .
+      dockerfile: dev/Dockerfile-dev
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+      - ~/.lein:/root/.lein
+    ports:
+      - "47480:47480"
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres/a_sample_db?user=adbuser&password=adbuserpassword
