@@ -26,7 +26,7 @@
 (integrant.repl/set-prep! #(duct/prep-config (read-config) profiles))
 
 (comment
-  (integrant.repl/halt)
+  (integrant.repl/reset-all)
 
 
   (duct/prep-config (read-config) profiles)

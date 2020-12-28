@@ -1,11 +1,17 @@
 {:duct.profile/base
  {:duct.core/project-ns prometheus-example
 
+  ;; Basic JVM + Ring stats
+  :prometheus-example.handler.monitoring-basic/collector {}
+  :prometheus-example.handler.monitoring-basic/middleware {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
+
   :prometheus-example.handler.monitoring/collector {}
   :prometheus-example.handler.monitoring/middleware {:collector #ig/ref :prometheus-example.handler.monitoring/collector}
 
   :duct.handler/root
-  {:middleware ^:distinct [#ig/ref :prometheus-example.handler.monitoring/middleware]}
+  {:middleware ^:distinct
+               [#ig/ref :prometheus-example.handler.monitoring-basic/middleware
+                #ig/ref :prometheus-example.handler.monitoring/middleware]}
 
   :duct.router/cascading
   [#ig/ref [:prometheus-example.handler/example]]
