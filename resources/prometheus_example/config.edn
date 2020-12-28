@@ -13,17 +13,24 @@
                [#ig/ref :prometheus-example.handler.monitoring-basic/middleware
                 #ig/ref :prometheus-example.handler.monitoring-compojure/middleware
                 #ig/ref :prometheus-example.handler.monitoring/middleware]
-   :router #ig/ref :prometheus-example.handler.monitoring-compojure/router}
+   :router #ig/ref :prometheus-example.handler.monitoring-compojure/router-nested}
 
   :prometheus-example.handler.monitoring-compojure/collector {}
   :prometheus-example.handler.monitoring-compojure/middleware {:collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
   :prometheus-example.handler.monitoring-compojure/router {:router #ig/ref :duct.router/cascading
                                                            :collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
 
+  :prometheus-example.handler.monitoring-compojure/router-nested {:router #ig/ref :prometheus-example.handler.monitoring-compojure/router
+                                                                  :collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
+
   :duct.router/cascading
-  [#ig/ref [:prometheus-example.handler/example]]
+  [#ig/ref [:prometheus-example.handler/example]
+   #ig/ref [:prometheus-example.handler/example-nested-context]]
 
   :prometheus-example.handler/example
+  {:db #ig/ref :duct.database/sql}
+
+  :prometheus-example.handler/example-nested-context
   {:db #ig/ref :duct.database/sql}
 
   :prometheus-example.handler.monitoring/hikaricp

@@ -19,3 +19,27 @@
       {:body {:example "data"}})
     (POST "/" [email]
       {:body (upsert-user! (:spec db) {:email email})})))
+
+(defmacro prometheus-context
+  "Same as compojure.core/context but adds a :whole-context-path key to the request with a vector with all the contexts matched"
+  [path args & routes]
+  `(context ~path ~args
+     (let [f# (routes ~@routes)]
+       (fn [request#]
+         (f# (update request# :whole-context-path
+               (fnil conj []) ~path))))))
+
+(defmethod ig/init-key :prometheus-example.handler/example-nested-context [_ {:keys [db]}]
+  (prometheus-context "/other-user-path" []
+    (prometheus-context "/:email" [email]
+      (GET "/info" []
+        {:body (get-user-by-email (:spec db) {:email email})})
+      (prometheus-context "/nested/:some" [some]
+        (GET "/" []
+          {:body (assoc
+                   (get-user-by-email (:spec db) {:email email})
+                   :some some)})))
+    (GET "/" []
+      {:body {:example "data"}})
+    (POST "/" [email]
+      {:body (upsert-user! (:spec db) {:email email})})))
