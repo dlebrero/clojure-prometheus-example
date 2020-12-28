@@ -13,17 +13,17 @@
                [#ig/ref :prometheus-example.handler.monitoring-basic/middleware
                 #ig/ref :prometheus-example.handler.monitoring-compojure/middleware
                 #ig/ref :prometheus-example.handler.monitoring/middleware]
-   :router #ig/ref :prometheus-example.handler.monitoring-compojure/router-nested}
+   :router #ig/ref :mixed/compojure-and-reitit}
 
   :prometheus-example.handler.monitoring-compojure/collector {}
   :prometheus-example.handler.monitoring-compojure/middleware {:collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
-  :prometheus-example.handler.monitoring-compojure/router {:router #ig/ref :duct.router/cascading
+  :prometheus-example.handler.monitoring-compojure/router {:router #ig/ref :compojure/routes
                                                            :collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
 
   :prometheus-example.handler.monitoring-compojure/router-nested {:router #ig/ref :prometheus-example.handler.monitoring-compojure/router
                                                                   :collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
 
-  :duct.router/cascading
+  [:prometheus-example.cascading/cascading :compojure/routes]
   [#ig/ref [:prometheus-example.handler/example]
    #ig/ref [:prometheus-example.handler/example-nested-context]]
 
@@ -32,6 +32,13 @@
 
   :prometheus-example.handler/example-nested-context
   {:db #ig/ref :duct.database/sql}
+
+  :prometheus-example.handler.example-reitit/router {:collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector
+                                                     :db #ig/ref :duct.database/sql}
+
+  [:prometheus-example.cascading/cascading :mixed/compojure-and-reitit]
+  [#ig/ref [:prometheus-example.handler.monitoring-compojure/router-nested]
+   #ig/ref [:prometheus-example.handler.example-reitit/router]]
 
   :prometheus-example.handler.monitoring/hikaricp
   {:hikari-cp #ig/ref :duct.database.sql/hikaricp
