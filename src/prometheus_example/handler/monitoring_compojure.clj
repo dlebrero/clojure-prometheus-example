@@ -11,21 +11,15 @@
     ;(jvm/initialize)
     (ring/initialize)))
 
-(defmethod ig/init-key ::router [_ {:keys [router]}]
-  (compojure/wrap-routes router (fn [handler]
-                                  (fn [req]
-                                    (assoc
-                                      (handler req)
-                                      ::route (:compojure/route req)
-                                      ::context (:context req))))))
+(defmethod ig/init-key ::router [_ {:keys [router collector]}]
+  (compojure/wrap-routes router
+    (fn [handler]
+      (ring/wrap-instrumentation handler collector {:path-fn (fn [req]
+                                                               (str (:context req) (second (:compojure/route req))))}))))
 
 (defmethod ig/init-key ::middleware [_ {:keys [collector]}]
   #(-> %
-     (ring/wrap-metrics collector {:path "/metrics-compojure"
-                                   :label-fn (fn [req resp]
-                                               (if resp
-                                                 {:path (str (::context resp) (second (::route resp)))}
-                                                 {:path (:uri req)}))})))
+     (ring/wrap-metrics-expose collector {:path "/metrics-compojure"})))
 
 (comment
   (slurp "http://localhost:3000/user")
