@@ -1,8 +1,15 @@
 (ns prometheus-example.handler.example
   (:require [compojure.core :refer :all]
-            [integrant.core :as ig]))
+            [integrant.core :as ig]
+            [hugsql.core :as hugsql]))
 
-(defmethod ig/init-key :prometheus-example.handler/example [_ options]
-  (context "/example" []
+(hugsql/def-db-fns "sql/user.sql")
+
+(defmethod ig/init-key :prometheus-example.handler/example [_ {:keys [db]}]
+  (context "/user" []
     (GET "/" []
-      {:body {:example "data"}})))
+      {:body {:example "data"}})
+    (POST "/" [email]
+      {:body (upsert-user! (:spec db) {:email email})})
+    (GET "/:email" [email]
+      {:body (get-user-by-email (:spec db) {:email email})})))

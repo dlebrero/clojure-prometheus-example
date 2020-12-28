@@ -12,6 +12,7 @@
             [iapetos.collector.exceptions :as ex])
   (:import (com.zaxxer.hikari.metrics.prometheus PrometheusMetricsTrackerFactory)))
 
+;; Just in case some SQL statement is executed before the system in initialized
 (hugsql/set-adapter! (adapter-case/kebab-adapter))
 
 (defmethod ig/init-key ::collector [_ config]
@@ -123,6 +124,10 @@
   hikari-cp)
 
 (comment
-  (slurp "http://localhost:3000/example")
+  (slurp "http://localhost:3000/user")
+  (slurp "http://localhost:3000/user/dan2")
+  (require '[clj-http.client])
+  (clj-http.client/post "http://localhost:3000/user" {:form-params {:email "dan"}})
+  (clj-http.client/post "http://localhost:3000/user" {:form-params {:email "dan9"}})
   (println
     (slurp "http://localhost:3000/metrics")))
