@@ -11,5 +11,5 @@
       {:body {:example "data"}})
     (POST "/" [email]
       {:body (upsert-user! (:spec db) {:email email})})
-    (GET "/:email" [email]
+    (GET "/:email/info" [email]
       {:body (get-user-by-email (:spec db) {:email email})})))

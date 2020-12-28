@@ -11,7 +11,13 @@
   :duct.handler/root
   {:middleware ^:distinct
                [#ig/ref :prometheus-example.handler.monitoring-basic/middleware
-                #ig/ref :prometheus-example.handler.monitoring/middleware]}
+                #ig/ref :prometheus-example.handler.monitoring-compojure/middleware
+                #ig/ref :prometheus-example.handler.monitoring/middleware]
+   :router #ig/ref :prometheus-example.handler.monitoring-compojure/router}
+
+  :prometheus-example.handler.monitoring-compojure/collector {}
+  :prometheus-example.handler.monitoring-compojure/middleware {:collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
+  :prometheus-example.handler.monitoring-compojure/router {:router #ig/ref :duct.router/cascading}
 
   :duct.router/cascading
   [#ig/ref [:prometheus-example.handler/example]]
