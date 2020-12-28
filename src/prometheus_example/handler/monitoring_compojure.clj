@@ -23,6 +23,7 @@
 
 (comment
   (slurp "http://localhost:3000/user")
+  (slurp "http://localhost:3000/user/dan2/nested/somevalue")
   (slurp "http://localhost:3000/user/dan2/info")
   (require '[clj-http.client])
   (clj-http.client/post "http://localhost:3000/user" {:form-params {:email "dan"}})

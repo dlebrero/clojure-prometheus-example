@@ -7,9 +7,15 @@
 
 (defmethod ig/init-key :prometheus-example.handler/example [_ {:keys [db]}]
   (context "/user" []
+    (context "/:email" [email]
+      (GET "/info" []
+        {:body (get-user-by-email (:spec db) {:email email})})
+      (context "/nested/:some" [some]
+        (GET "/" []
+          {:body (assoc
+                   (get-user-by-email (:spec db) {:email email})
+                   :some some)})))
     (GET "/" []
       {:body {:example "data"}})
     (POST "/" [email]
-      {:body (upsert-user! (:spec db) {:email email})})
-    (GET "/:email/info" [email]
-      {:body (get-user-by-email (:spec db) {:email email})})))
+      {:body (upsert-user! (:spec db) {:email email})})))
