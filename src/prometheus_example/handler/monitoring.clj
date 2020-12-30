@@ -20,38 +20,6 @@
     (prometheus/collector-registry)
     (jvm/initialize)
     (prometheus/register
-      (prometheus/counter :event/total {:description "Total number of events read from unilog"
-                                        :labels [:db-name]})
-      (prometheus/counter :event/correct-type {:description "Total number of events read from unilog that the app is interested in"
-                                               :labels [:db-name]})
-      (prometheus/counter :event/valid {:description "Total number of events from unilog of that the app is interested in and are also valid"
-                                        :labels [:db-name]})
-      (prometheus/gauge :event/queued-up {:description "Total number of events queued locally, waiting for some other entity to show up"
-                                          :labels [:flow-instance]})
-      (prometheus/gauge :event/unilog-offset {:description "Last processed unilog offset"
-                                              :labels [:db-name]})
-      (prometheus/gauge :event/last-run {:description "Timestamp of last unilog consumer run"
-                                         :labels [:db-name]})
-      (prometheus/gauge :event/last-success {:description "Timestamp of last unilog consumer run without exceptions"
-                                             :labels [:db-name]})
-      (prometheus/gauge :event/last-failure {:description "Timestamp of last unilog consumer run and fail"
-                                             :labels [:db-name]})
-      (prometheus/gauge :event/last-start {:description "Timestamp of last unilog consumer run start time"
-                                           :labels [:db-name]})
-      (prometheus/histogram
-        :event/delay
-        {:description "Event delay since it was created in Flow"
-         :labels [:db-name :event-type]
-         :buckets [1000, 3000, 10000, 30000, 60000, (* 10 60000), (* 15 60000)]})
-      (prometheus/histogram
-        :event/tenant-duration
-        {:description "Time taken to process a tenant"
-         :labels [:db-name]
-         :buckets [1, 3, 5, 10, 60, 300, (* 30 60), (* 60 60)]})
-      (prometheus/gauge :flow-config-load/last-start {:description "Last start of the flow-config-reload"})
-      (prometheus/gauge :flow-config-load/last-run {:description "Last finish time of the flow-config-reload"})
-      (prometheus/gauge :flow-config-load/last-failure {:description "Last failure time of the flow-config-reload"})
-      (prometheus/gauge :flow-config-load/last-success {:description "Last success time of the flow-config-reload"})
       (prometheus/histogram
         :sql/run-duration
         {:description "SQL query duration"
@@ -65,10 +33,6 @@
         {:description "the total number and type of exceptions for the observed sql query."
          :labels [:query]}))
     (ring/initialize)))
-
-(defmethod ig/init-key ::middleware [_ {:keys [collector]}]
-  #(-> %
-     (ring/wrap-metrics collector)))
 
 (defmacro metrics
   [metrics-collector options & body]

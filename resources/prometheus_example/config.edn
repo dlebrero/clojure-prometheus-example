@@ -6,13 +6,11 @@
   :prometheus-example.handler.monitoring-basic/middleware {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
 
   :prometheus-example.handler.monitoring/collector {}
-  :prometheus-example.handler.monitoring/middleware {:collector #ig/ref :prometheus-example.handler.monitoring/collector}
 
   :duct.handler/root
   {:middleware ^:distinct
                [#ig/ref :prometheus-example.handler.monitoring-basic/middleware
-                #ig/ref :prometheus-example.handler.monitoring-compojure/middleware
-                #ig/ref :prometheus-example.handler.monitoring/middleware]
+                #ig/ref :prometheus-example.handler.monitoring-compojure/middleware]
    :router #ig/ref :mixed/compojure-and-reitit}
 
   :prometheus-example.handler.monitoring-compojure/collector {}
@@ -33,7 +31,7 @@
   :prometheus-example.handler/example-nested-context
   {:db #ig/ref :duct.database/sql}
 
-  :prometheus-example.handler.example-reitit/router {:collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector
+  :prometheus-example.handler.example-reitit/router {:collector #ig/ref :prometheus-example.handler.monitoring/collector
                                                      :db #ig/ref :duct.database/sql}
 
   [:prometheus-example.cascading/cascading :mixed/compojure-and-reitit]
