@@ -25,7 +25,6 @@
   (compojure/wrap-routes router
     (fn [handler]
       (ring/wrap-instrumentation handler collector {:path-fn (fn [req]
-                                                               (println (:whole-context-path req))
                                                                (str (apply str (:whole-context-path req)) (second (:compojure/route req))))}))))
 
 (comment

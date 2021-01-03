@@ -25,7 +25,6 @@
 
 (defmethod ig/init-key ::jetty-configurator [_ {:keys [collector]}]
   (fn [jetty-server]
-    (println "the server!" jetty-server)
     (configure-stats jetty-server collector)))
 
 (defmethod ig/init-key ::middleware [_ {:keys [collector]}]
