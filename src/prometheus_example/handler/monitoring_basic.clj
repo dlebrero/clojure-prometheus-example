@@ -3,7 +3,10 @@
             [iapetos.collector.jvm :as jvm]
             [iapetos.collector.ring :as ring]
             [integrant.core :as ig]
-            [iapetos.core :as prometheus]))
+            [iapetos.registry :as registry]
+            [iapetos.core :as prometheus])
+  (:import (org.eclipse.jetty.server.handler StatisticsHandler)
+           (io.prometheus.client.jetty JettyStatisticsCollector QueuedThreadPoolStatisticsCollector)))
 
 (defmethod ig/init-key ::collector [_ config]
   (->
@@ -11,12 +14,27 @@
     (jvm/initialize)
     (ring/initialize)))
 
+(defn configure-stats [jetty-server collector]
+  (let [raw-collector (registry/raw collector)
+        stats-handler (doto
+                        (StatisticsHandler.)
+                        (.setHandler (.getHandler jetty-server)))]
+    (.setHandler jetty-server stats-handler)
+    (.register (JettyStatisticsCollector. stats-handler) raw-collector)
+    (.register (QueuedThreadPoolStatisticsCollector. (.getThreadPool jetty-server) "myapp") raw-collector)))
+
+(defmethod ig/init-key ::jetty-configurator [_ {:keys [collector]}]
+  (fn [jetty-server]
+    (println "the server!" jetty-server)
+    (configure-stats jetty-server collector)))
+
 (defmethod ig/init-key ::middleware [_ {:keys [collector]}]
   #(-> %
      (ring/wrap-metrics collector {:path "/metrics-simple"})))
 
 (comment
-  (slurp "http://localhost:3000/user")
+  (dotimes [i 100]
+    (future (slurp "http://localhost:3000/user")))
   (slurp "http://localhost:3000/user/dan2")
   (require '[clj-http.client])
   (clj-http.client/post "http://localhost:3000/user" {:form-params {:email "dan"}})

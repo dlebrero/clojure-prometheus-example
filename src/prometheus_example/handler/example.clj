@@ -16,6 +16,7 @@
                    (get-user-by-email (:spec db) {:email email})
                    :some some)})))
     (GET "/" []
+      (Thread/sleep 10000)
       {:body {:example "data"}})
     (POST "/" [email]
       {:body (upsert-user! (:spec db) {:email email})})))
