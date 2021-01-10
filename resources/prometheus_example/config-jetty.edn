@@ -1,0 +1,10 @@
+{:duct.profile/base
+ {
+
+  :prometheus-example.handler.monitoring-basic/jetty-configurator
+  {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
+
+  :duct.server.http/jetty
+  {:configurator #ig/ref :prometheus-example.handler.monitoring-basic/jetty-configurator}
+
+  }}

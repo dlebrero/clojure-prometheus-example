@@ -20,17 +20,22 @@
 
 (clojure.tools.namespace.repl/set-refresh-dirs "dev/src" "src" "test")
 
-(defn set-config [config-file]
-  (integrant.repl/set-prep! #(duct/prep-config (read-config config-file) profiles)))
+(defn set-config [config-files]
+  (let [final-config (apply duct/merge-configs (map read-config config-files))]
+    (integrant.repl/set-prep! #(duct/prep-config final-config profiles))))
 
 (comment
 
-  (set-config "config-simple.edn")
+  ;; The basic config
+  (set-config ["config-simple.edn"])
   (go)
-  (integrant.repl/reset-all)
-
   (halt)
 
+  ;; Basic + Jetty monitoring
+  (set-config ["config-simple.edn" "config-jetty.edn"])
+
+  (integrant.repl/reset-all)
+  (duct/merge-configs (read-config "config-jetty.edn") (read-config "config-simple.edn"))
 
   (duct/prep-config (read-config "config-simple.edn") profiles)
   )
