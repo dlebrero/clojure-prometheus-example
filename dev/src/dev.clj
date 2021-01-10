@@ -12,22 +12,25 @@
 
 (duct/load-hierarchy)
 
-(defn read-config []
-  (duct/read-config (io/resource "prometheus_example/config.edn")))
+(defn read-config [config-file]
+  (duct/read-config (io/resource (str "prometheus_example/" config-file))))
 
 (def profiles
   [:duct.profile/dev :duct.profile/local])
 
 (clojure.tools.namespace.repl/set-refresh-dirs "dev/src" "src" "test")
 
-(when (io/resource "local.clj")
-  (load "local"))
-
-(integrant.repl/set-prep! #(duct/prep-config (read-config) profiles))
+(defn set-config [config-file]
+  (integrant.repl/set-prep! #(duct/prep-config (read-config config-file) profiles)))
 
 (comment
+
+  (set-config "config-simple.edn")
+  (go)
   (integrant.repl/reset-all)
 
+  (halt)
 
-  (duct/prep-config (read-config) profiles)
+
+  (duct/prep-config (read-config "config-simple.edn") profiles)
   )

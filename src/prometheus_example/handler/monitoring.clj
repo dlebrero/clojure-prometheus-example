@@ -12,9 +12,6 @@
             [iapetos.collector.exceptions :as ex])
   (:import (com.zaxxer.hikari.metrics.prometheus PrometheusMetricsTrackerFactory)))
 
-;; Just in case some SQL statement is executed before the system in initialized
-(hugsql/set-adapter! (adapter-case/kebab-adapter))
-
 (defmethod ig/init-key ::collector [_ config]
   (->
     (prometheus/collector-registry)

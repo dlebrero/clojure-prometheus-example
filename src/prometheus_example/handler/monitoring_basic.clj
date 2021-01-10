@@ -3,8 +3,7 @@
             [iapetos.collector.jvm :as jvm]
             [iapetos.collector.ring :as ring]
             [integrant.core :as ig]
-            [iapetos.registry :as registry]
-            [iapetos.core :as prometheus])
+            [iapetos.registry :as registry])
   (:import (org.eclipse.jetty.server.handler StatisticsHandler)
            (io.prometheus.client.jetty JettyStatisticsCollector QueuedThreadPoolStatisticsCollector)))
 
@@ -29,7 +28,7 @@
 
 (defmethod ig/init-key ::middleware [_ {:keys [collector]}]
   #(-> %
-     (ring/wrap-metrics collector {:path "/metrics-simple"})))
+     (ring/wrap-metrics collector {:path "/metrics"})))
 
 (comment
   (dotimes [i 100]
@@ -39,4 +38,4 @@
   (clj-http.client/post "http://localhost:3000/user" {:form-params {:email "dan"}})
   (clj-http.client/post "http://localhost:3000/user" {:form-params {:email "dan9"}})
   (println
-    (slurp "http://localhost:3000/metrics-simple")))
+    (slurp "http://localhost:3000/metrics")))
