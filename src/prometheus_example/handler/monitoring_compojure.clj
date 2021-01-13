@@ -5,11 +5,17 @@
 
 (defmethod ig/init-key ::middleware [_ {:keys [collector]}]
   #(-> %
-     (ring/wrap-metrics-expose collector {:path "/metrics"})
-     (compojure/wrap-routes
-       (fn [handler]
-         (ring/wrap-instrumentation handler collector {:path-fn (fn [req]
-                                                                  (str (:context req) (second (:compojure/route req))))})))))
+     (ring/wrap-metrics collector {:path "/metrics"
+                                   :label-fn (fn [req resp]
+                                               (if resp
+                                                 {:path (str (::context resp) (second (::route resp)))}
+                                                 {:path (:uri req)}))})
+     (compojure/wrap-routes (fn [handler]
+                              (fn [req]
+                                (assoc
+                                  (handler req)
+                                  ::route (:compojure/route req)
+                                  ::context (:context req)))))))
 
 (defmethod ig/init-key ::router-nested [_ {:keys [router collector]}]
   (compojure/wrap-routes router
