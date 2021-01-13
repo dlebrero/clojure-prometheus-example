@@ -20,6 +20,7 @@
 
   }
 
+ ;; Configuration for adding the Jetty monitoring
  :monitoring.example/jetty-monitoring
  {
   :prometheus-example.handler.monitoring-basic/jetty-configurator
@@ -29,6 +30,7 @@
   {:configurator #ig/ref :prometheus-example.handler.monitoring-basic/jetty-configurator}
   }
 
+ ;; Configuration to add basic JVM + Ring metrics
  :monitoring.example/basic-monitoring
  {:prometheus-example.handler.monitoring-basic/middleware
   {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
@@ -41,6 +43,7 @@
   [#ig/ref [:prometheus-example.handler/example]]
   }
 
+ ;; Compojure example
  :monitoring.example/compojure
  {
   :prometheus-example.handler.monitoring-compojure/middleware
@@ -49,7 +52,6 @@
   :duct.handler/root
   {:middleware ^:distinct
                [#ig/ref :prometheus-example.handler.monitoring-compojure/middleware]}
-
 
   :duct.router/cascading
   [#ig/ref [:prometheus-example.handler/example]]
