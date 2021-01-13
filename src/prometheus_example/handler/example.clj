@@ -18,6 +18,8 @@
     (GET "/" []
       (Thread/sleep 10000)
       {:body {:example "data"}})
+    (GET "/some-path/:path-param/before" [path-param]
+      {:body {:example "data" :param path-param}})
     (POST "/" [email]
       {:body (upsert-user! (:spec db) {:email email})})))
 

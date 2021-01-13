@@ -34,6 +34,7 @@
   (dotimes [i 100]
     (future (slurp "http://localhost:3000/user")))
   (slurp "http://localhost:3000/user/dan2")
+  (slurp "http://localhost:3000/user/some-path/dan/before")
   (require '[clj-http.client])
   (clj-http.client/post "http://localhost:3000/user" {:form-params {:email "dan"}})
   (clj-http.client/post "http://localhost:3000/user" {:form-params {:email "dan9"}})
