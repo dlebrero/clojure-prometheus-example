@@ -12,30 +12,24 @@
 
 (duct/load-hierarchy)
 
-(defn read-config [config-file]
-  (duct/read-config (io/resource (str "prometheus_example/" config-file))))
-
-(def profiles
-  [:duct.profile/dev :duct.profile/local])
+(defn read-config []
+  (duct/read-config (io/resource "prometheus_example/config-common.edn")))
 
 (clojure.tools.namespace.repl/set-refresh-dirs "dev/src" "src" "test")
 
-(defn set-config [config-files]
-  (let [final-config (apply duct/merge-configs (map read-config config-files))]
-    (integrant.repl/set-prep! #(duct/prep-config final-config profiles))))
+(defn set-config [profiles]
+  (integrant.repl/set-prep! #(duct/prep-config (read-config) (concat [:duct.profile/dev :duct.profile/local] profiles))))
 
 (comment
 
   ;; The basic config
-  (set-config ["config-simple.edn"])
+  (set-config [:monitoring.example/basic-monitoring])
   (go)
   (halt)
 
   ;; Basic + Jetty monitoring
-  (set-config ["config-simple.edn" "config-jetty.edn"])
+  (set-config [:monitoring.example/basic-monitoring :monitoring.example/jetty-monitoring])
+  (set-config [:monitoring.example/compojure])
 
   (integrant.repl/reset-all)
-  (duct/merge-configs (read-config "config-jetty.edn") (read-config "config-simple.edn"))
-
-  (duct/prep-config (read-config "config-simple.edn") profiles)
   )

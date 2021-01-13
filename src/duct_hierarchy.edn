@@ -1,1 +1,3 @@
-{}
+{:monitoring.example/compojure [:duct/profile]
+ :monitoring.example/basic-monitoring [:duct/profile]
+ :monitoring.example/jetty-monitoring [:duct/profile]}
