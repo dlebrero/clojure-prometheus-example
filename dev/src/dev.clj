@@ -13,7 +13,7 @@
 (duct/load-hierarchy)
 
 (defn read-config []
-  (duct/read-config (io/resource "prometheus_example/config-common.edn")))
+  (duct/read-config (io/resource "prometheus_example/config.edn")))
 
 (clojure.tools.namespace.repl/set-refresh-dirs "dev/src" "src" "test")
 

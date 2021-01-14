@@ -1,48 +1,10 @@
 {:duct.profile/base
  {:duct.core/project-ns prometheus-example
 
-  ;; Basic JVM + Ring stats
   :prometheus-example.handler.monitoring-basic/collector {}
-  :prometheus-example.handler.monitoring-basic/middleware {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
-  :prometheus-example.handler.monitoring-basic/jetty-configurator {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
-  :duct.server.http/jetty {:configurator #ig/ref :prometheus-example.handler.monitoring-basic/jetty-configurator}
-
-  :prometheus-example.handler.monitoring/collector {}
-
-  :duct.handler/root
-  {:middleware ^:distinct
-               [#ig/ref :prometheus-example.handler.monitoring-basic/middleware
-                #ig/ref :prometheus-example.handler.monitoring-compojure/middleware]
-   :router #ig/ref :mixed/compojure-and-reitit}
-
-  :prometheus-example.handler.monitoring-compojure/collector {}
-  :prometheus-example.handler.monitoring-compojure/middleware {:collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
-  :prometheus-example.handler.monitoring-compojure/router {:router #ig/ref :compojure/routes
-                                                           :collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
-
-  :prometheus-example.handler.monitoring-compojure/router-nested {:router #ig/ref :prometheus-example.handler.monitoring-compojure/router
-                                                                  :collector #ig/ref :prometheus-example.handler.monitoring-compojure/collector}
-
-  [:prometheus-example.cascading/cascading :compojure/routes]
-  [#ig/ref [:prometheus-example.handler/example]
-   #ig/ref [:prometheus-example.handler/example-nested-context]]
 
   :prometheus-example.handler/example
   {:db #ig/ref :duct.database/sql}
-
-  :prometheus-example.handler/example-nested-context
-  {:db #ig/ref :duct.database/sql}
-
-  :prometheus-example.handler.example-reitit/router {:collector #ig/ref :prometheus-example.handler.monitoring/collector
-                                                     :db #ig/ref :duct.database/sql}
-
-  [:prometheus-example.cascading/cascading :mixed/compojure-and-reitit]
-  [#ig/ref [:prometheus-example.handler.monitoring-compojure/router-nested]
-   #ig/ref [:prometheus-example.handler.example-reitit/router]]
-
-  :prometheus-example.handler.monitoring/hikaricp
-  {:hikari-cp #ig/ref :duct.database.sql/hikaricp
-   :metrics-collector #ig/ref :prometheus-example.handler.monitoring/collector}
 
   :duct.database.sql/hikaricp
   {:idle-timeout 300000
@@ -56,6 +18,54 @@
    :logger false
    :jdbc-url #duct/env "DATABASE_URL"}
 
+  }
+
+ ;; Configuration for adding the Jetty monitoring
+ :monitoring.example/jetty-monitoring
+ {
+  :prometheus-example.handler.monitoring-basic/jetty-configurator
+  {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
+
+  :duct.server.http/jetty
+  {:configurator #ig/ref :prometheus-example.handler.monitoring-basic/jetty-configurator}
+  }
+
+ ;; Configuration to add basic JVM + Ring metrics
+ :monitoring.example/basic-monitoring
+ {:prometheus-example.handler.monitoring-basic/middleware
+  {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
+
+  :duct.handler/root
+  {:middleware ^:distinct
+               [#ig/ref :prometheus-example.handler.monitoring-basic/middleware]}
+
+  :duct.router/cascading
+  [#ig/ref [:prometheus-example.handler/example]]
+  }
+
+ ;; Compojure example
+ :monitoring.example/compojure
+ {
+  :prometheus-example.handler.monitoring-compojure/middleware
+  {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
+
+  :duct.handler/root
+  {:middleware ^:distinct
+               [#ig/ref :prometheus-example.handler.monitoring-compojure/middleware]}
+
+  :duct.router/cascading
+  [#ig/ref [:prometheus-example.handler/example]]
+  }
+
+ ;; Reitit example
+ :monitoring.example/reitit
+ {
+  :prometheus-example.handler.example-reitit/router
+  {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector
+   :db #ig/ref :duct.database/sql}
+
+  :duct.router/cascading
+  [#ig/ref [:prometheus-example.handler.example-reitit/router]]
   }
 
  :duct.profile/dev #duct/include "dev"
