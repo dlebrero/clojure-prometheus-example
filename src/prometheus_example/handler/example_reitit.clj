@@ -26,14 +26,14 @@
   (let [router (ring/router (routes db)
                  {:data {:middleware [(fn [handler]
                                         (prometheus-ring/wrap-instrumentation handler collector
-                                          {:path-fn (fn [req] (:template (:reitit.core/match req)))}))]}})
-        handler (ring/ring-handler router nil {:middleware [(fn [handler]
-                                                              (prometheus-ring/wrap-metrics-expose handler collector {:path "/metrics-reitit"}))]})]
-    handler))
+                                          {:path-fn (fn [req] (:template (ring/get-match req)))}))]}})]
+    (ring/ring-handler router nil
+      {:middleware [(fn [handler]
+                      (prometheus-ring/wrap-metrics-expose handler collector {:path "/metrics"}))]})))
 
 (comment
   (println
-    (slurp "http://localhost:3000/metrics-reitit"))
+    (slurp "http://localhost:3000/metrics"))
 
   (slurp "http://localhost:3000/reitit-user")
   (slurp "http://localhost:3000/reitit-user/dan2/info")

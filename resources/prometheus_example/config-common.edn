@@ -57,6 +57,17 @@
   [#ig/ref [:prometheus-example.handler/example]]
   }
 
+ ;; Reitit example
+ :monitoring.example/reitit
+ {
+  :prometheus-example.handler.example-reitit/router
+  {:collector #ig/ref :prometheus-example.handler.monitoring-basic/collector
+   :db #ig/ref :duct.database/sql}
+
+  :duct.router/cascading
+  [#ig/ref [:prometheus-example.handler.example-reitit/router]]
+  }
+
  :duct.profile/dev #duct/include "dev"
  :duct.profile/local #duct/include "local"
  :duct.profile/prod {}

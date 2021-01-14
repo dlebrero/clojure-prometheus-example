@@ -30,6 +30,7 @@
   ;; Basic + Jetty monitoring
   (set-config [:monitoring.example/basic-monitoring :monitoring.example/jetty-monitoring])
   (set-config [:monitoring.example/compojure])
+  (set-config [:monitoring.example/reitit])
 
   (integrant.repl/reset-all)
   )
