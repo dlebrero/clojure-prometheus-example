@@ -12,6 +12,7 @@
             [iapetos.collector.exceptions :as ex])
   (:import (com.zaxxer.hikari.metrics.prometheus PrometheusMetricsTrackerFactory)))
 
+;; Inspired by https://github.com/clj-commons/iapetos/blob/v0.1.6/src/iapetos/collector/fn.clj#L24
 (defmacro metrics
   [metrics-collector options & body]
   `(if ~metrics-collector
