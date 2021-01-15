@@ -68,6 +68,13 @@
   [#ig/ref [:prometheus-example.handler.example-reitit/router]]
   }
 
+ :monitoring.example/database
+ {
+  :prometheus-example.handler.monitoring/hikaricp
+  {:hikari-cp #ig/ref :duct.database.sql/hikaricp
+   :metrics-collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
+  }
+
  :duct.profile/dev #duct/include "dev"
  :duct.profile/local #duct/include "local"
  :duct.profile/prod {}

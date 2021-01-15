@@ -2,4 +2,5 @@
  :monitoring.example/basic-monitoring [:duct/profile]
  :monitoring.example/jetty-monitoring [:duct/profile]
  :monitoring.example/reitit [:duct/profile]
+ :monitoring.example/database [:duct/profile]
  }

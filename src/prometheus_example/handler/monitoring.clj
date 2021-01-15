@@ -12,25 +12,6 @@
             [iapetos.collector.exceptions :as ex])
   (:import (com.zaxxer.hikari.metrics.prometheus PrometheusMetricsTrackerFactory)))
 
-(defmethod ig/init-key ::collector [_ config]
-  (->
-    (prometheus/collector-registry)
-    (jvm/initialize)
-    (prometheus/register
-      (prometheus/histogram
-        :sql/run-duration
-        {:description "SQL query duration"
-         :labels [:query]})
-      (prometheus/counter
-        :sql/run-total
-        {:description "the total number of finished runs of the observed sql query."
-         :labels [:query :result]})
-      (ex/exception-counter
-        :sql/exceptions-total
-        {:description "the total number and type of exceptions for the observed sql query."
-         :labels [:query]}))
-    (ring/initialize)))
-
 (defmacro metrics
   [metrics-collector options & body]
   `(if ~metrics-collector
@@ -79,7 +60,19 @@
 
   (hugsql/set-adapter!
     (MetricsAdapter.
-      metrics-collector
+      (prometheus/register metrics-collector
+        (prometheus/histogram
+          :sql/run-duration
+          {:description "SQL query duration"
+           :labels [:query]})
+        (prometheus/counter
+          :sql/run-total
+          {:description "the total number of finished runs of the observed sql query."
+           :labels [:query :result]})
+        (ex/exception-counter
+          :sql/exceptions-total
+          {:description "the total number and type of exceptions for the observed sql query."
+           :labels [:query]}))
       (adapter-case/kebab-adapter)))
 
   hikari-cp)
