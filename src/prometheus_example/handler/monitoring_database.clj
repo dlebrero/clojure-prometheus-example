@@ -1,4 +1,4 @@
-(ns prometheus-example.handler.monitoring
+(ns prometheus-example.handler.monitoring-database
   (:require [iapetos.core :as prometheus]
             [iapetos.collector.jvm :as jvm]
             [iapetos.collector.ring :as ring]

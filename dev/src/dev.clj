@@ -33,5 +33,8 @@
   (set-config [:monitoring.example/reitit])
   (set-config [:monitoring.example/reitit :monitoring.example/database])
 
+  ;; all
+  (set-config [:monitoring.example/reitit :monitoring.example/database :monitoring.example/jetty-monitoring])
+
   (integrant.repl/reset-all)
   )

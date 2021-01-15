@@ -70,7 +70,7 @@
 
  :monitoring.example/database
  {
-  :prometheus-example.handler.monitoring/hikaricp
+  :prometheus-example.handler.monitoring-database/hikaricp
   {:hikari-cp #ig/ref :duct.database.sql/hikaricp
    :metrics-collector #ig/ref :prometheus-example.handler.monitoring-basic/collector}
   }
