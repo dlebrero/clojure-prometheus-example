@@ -1,7 +1,5 @@
 (ns prometheus-example.handler.monitoring-database
   (:require [iapetos.core :as prometheus]
-            [iapetos.collector.jvm :as jvm]
-            [iapetos.collector.ring :as ring]
             [integrant.core :as ig]
             [iapetos.collector.exceptions :as ex]
             [iapetos.registry :as registry]
