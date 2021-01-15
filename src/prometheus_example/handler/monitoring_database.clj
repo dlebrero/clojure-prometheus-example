@@ -8,7 +8,6 @@
             [hugsql-adapter-case.adapters :as adapter-case]
             [hugsql.core :as hugsql]
             [hugsql.adapter :as adapter]
-            [iapetos.core :as prometheus]
             [iapetos.collector.exceptions :as ex])
   (:import (com.zaxxer.hikari.metrics.prometheus PrometheusMetricsTrackerFactory)))
 
