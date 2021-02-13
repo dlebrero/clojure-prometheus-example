@@ -2,8 +2,6 @@
 
 This code is the companion of the blog post [Prometheus in a Clojure stack: Duct, Jetty, Compojure/Reitit and Hugsql](https://danlebrero.com/2021/02/03/prometheus-clojure-ring-sql-compojure-reitit/)
 
-The main processing function is [here](our-service/src/our_service/big_file.clj#L115).
-
 ## Usage
 
 Docker should be installed.
