@@ -12,6 +12,6 @@ To run:
 
      docker-compose up --build 
  
-After the environment start, you can connect to the REPL on port 47480, run `(dev)` and then run of the `set-config` function calls, depending on what do you want to try.
+After the environment start, you can connect to the REPL on port 47480, run `(dev)` and then run of the `set-config` [function calls](dev/src/dev.clj#L26), depending on what do you want to try.
 
 Prometheus metrics endpoint will be available at http://localhost:3000/metrics.
